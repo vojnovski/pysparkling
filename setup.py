@@ -33,6 +33,7 @@ setup(
         'http': ['requests>=2.6.0'],
         's3': ['boto>=2.36.0'],
         'hdfs': ['hdfs>=2.0.0'],
+        'streaming': ['tornado>=4.3'],
         'tests': [
             'nose>=1.3.4',
             'futures>=3.0.1',

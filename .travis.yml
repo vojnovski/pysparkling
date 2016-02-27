@@ -9,7 +9,7 @@ python:
 install:
  - pip install --upgrade pip
  - "if [[ $TRAVIS_PYTHON_VERSION != 'pypy'* ]]; then pip install pylzma; fi"
- - "pip install .[http,s3,tests]"
+ - "pip install .[http,s3,streaming,tests]"
 script: "nosetests -vv"
 notifications:
   webhooks: https://readthedocs.org/build/pysparkling
