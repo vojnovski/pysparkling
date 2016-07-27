@@ -89,7 +89,8 @@ class Context(object):
     __last_rdd_id = 0
 
     def __init__(self, pool=None, serializer=None, deserializer=None,
-                 data_serializer=None, data_deserializer=None):
+                 data_serializer=None, data_deserializer=None,
+                 textfile_delimiter=None):
         if not pool:
             pool = DummyPool()
         if not serializer:
@@ -106,6 +107,7 @@ class Context(object):
         self._deserializer = deserializer
         self._data_serializer = data_serializer
         self._data_deserializer = data_deserializer
+        self._textfile_delimiter = textfile_delimiter
         self._s3_conn = None
         self._stats = defaultdict(float)
 
@@ -338,10 +340,16 @@ class Context(object):
         encoding = 'utf8' if use_unicode else 'ascii'
 
         rdd_filenames = self.parallelize(resolved_names, num_partitions)
-        rdd = rdd_filenames.flatMap(
-            lambda f_name:
-            TextFile(f_name).load(encoding=encoding).read().splitlines()
-        )
+        if self._textfile_delimiter:
+            rdd = rdd_filenames.flatMap(
+                lambda f_name:
+                TextFile(f_name).load(encoding=encoding).read().split(self._textfile_delimiter)
+            )
+        else:
+            rdd = rdd_filenames.flatMap(
+                lambda f_name:
+                TextFile(f_name).load(encoding=encoding).read().splitlines()
+            )
         rdd._name = filename
         return rdd
 
